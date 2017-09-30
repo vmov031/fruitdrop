@@ -1,8 +1,30 @@
+/***
+**** MAIN PAGE CSS
+****/
 
-.navbar {
-	margin: 10px;
+.content {
+	background: url("../images/main_page.jpg") no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	min-height: 100%;
+
+
 }
 
-#footer {
-	text-align: center;
+.navbar ul li:last-child {
+    border: none;
+}
+
+.navbar-brand {
+	font-size: 30px!important;
+}
+
+.footer {
+    width: 100%;	
+    text-align: center;
+    background-color: #666666;
+	color: #ffffff;
+	font-size: 11px;
 }
