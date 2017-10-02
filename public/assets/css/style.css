@@ -27,4 +27,18 @@
     background-color: #666666;
 	color: #ffffff;
 	font-size: 11px;
+	position: static;
 }
+
+.profile {
+	margin-top: 80px;
+}
+
+.card {
+	max-width: 260px;
+}
+
+.btn {
+	margin: 5px;
+}
+
