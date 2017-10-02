@@ -11,6 +11,9 @@ firebase.initializeApp(config);
 
 var provider = new firebase.auth.GoogleAuthProvider();
 var user;
+if (sessionStorage.getItem("user")) {
+    user = $.parseJSON(sessionStorage.getItem("user"));
+}
 
 function login() {
     firebase.auth().signInWithPopup(provider).then(function(result) {
@@ -19,6 +22,7 @@ function login() {
         var token = result.credential.accessToken;
         // The signed-in user info.
         user = result.user;
+        sessionStorage.setItem("user", JSON.stringify(user));
         // ...
     }).catch(function(error) {
         console.log(error);
@@ -53,19 +57,19 @@ $(document).on("click", "#submit-add", function(event) {
     var date = $("#date").val();
     // Input to firebase under user's unique ID
     firebase.database().ref("listings").child(user.uid).push({
-        item: name,
+        item: item,
         quantity: quantity,
         street: street,
         zipCode: zipCode,
         date: date
     })
-  
+    $('#addListing').modal('hide');
 });
 
 // Display user's listings in profile
 firebase.database().ref("listings").child(user.uid).on("child_added", function(childSnapshot) {
-    $("#list").append("<tr><td>" + childSnapshot.val().item +
+    $("#listings").append("<tr><td>" + childSnapshot.val().item +
     "</td><td>" + childSnapshot.val().quantity +
-    "</td><td>" + childSnapshot.val().street + childSnapshot.val().zipCode +
+    "</td><td>" + childSnapshot.val().street + " " + childSnapshot.val().zipCode +
     "</td><td>" + childSnapshot.val().date + "</td></tr>");
   });
