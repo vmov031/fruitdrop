@@ -11,12 +11,13 @@
 	min-height: 100%;
 }
 
-.navbar ul li:last-child {
+#button2, #logout {
     border: none;
 }
 
 .navbar-brand {
 	font-size: 30px!important;
+	margin-left: 1rem;
 }
 
 .footer {
@@ -25,6 +26,7 @@
     background-color: #666666;
 	color: #ffffff;
 	font-size: 11px;
+	position: static;
 }
 
 .profile {
