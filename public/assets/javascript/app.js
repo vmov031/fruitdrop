@@ -46,6 +46,13 @@ $(document).ready(function() {
             $("#profile-pic").attr("src", currentUser.photoURL);
             $("#profile-name").text(currentUser.displayName);
             $("#button2").html("<a class='nav-link' id='profile-link' href='#'>Profile</a>");
+            // Display user's listings in profile
+            firebase.database().ref("listings").child(currentUser.uid).on("child_added", function(childSnapshot) {
+                $("#listings").append("<tr><td>" + childSnapshot.val().item +
+                    "</td><td>" + childSnapshot.val().quantity +
+                    "</td><td>" + childSnapshot.val().street + " " + childSnapshot.val().zipCode +
+                    "</td><td>" + childSnapshot.val().date + "</td></tr>");
+            });
         }
     });
 
@@ -95,18 +102,9 @@ $(document).ready(function() {
         })
         $('#addListing').modal('hide');
     });
-    // Display user's listings in profile
-    if (currentUser) {
-        firebase.database().ref("listings").child(currentUser.uid).on("child_added", function(childSnapshot) {
-            $("#listings").append("<tr><td>" + childSnapshot.val().item +
-                "</td><td>" + childSnapshot.val().quantity +
-                "</td><td>" + childSnapshot.val().street + " " + childSnapshot.val().zipCode +
-                "</td><td>" + childSnapshot.val().date + "</td></tr>");
-        });
-    }
 
-    // Map Page
-    // Credit: https://wrightshq.com/playground/placing-multiple-markers-on-a-google-map-using-api-3/
+        // Map Page
+        // Credit: https://wrightshq.com/playground/placing-multiple-markers-on-a-google-map-using-api-3/
 
     function initMap() {
         var map;
