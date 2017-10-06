@@ -41,9 +41,13 @@
 	margin: 5px;
 }
 
-.col-md-10 {
-	position: fixed;
-	top: 10rem;
+#search {
+	margin-top: 10rem;
+	text-align: center;
+}
+.search-input {
+	width: 40%;
+	height: 40px;
 }
 /*MAP PAGE*/
 
