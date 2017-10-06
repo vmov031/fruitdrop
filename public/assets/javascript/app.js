@@ -46,7 +46,14 @@ $(document).ready(function() {
             currentUser = firebase.auth().currentUser;
             $("#profile-pic").attr("src", currentUser.photoURL);
             $("#profile-name").text(currentUser.displayName);
+            $("#email").html(currentUser.email);
             $("#button2").html("<a class='nav-link' id='profile-link' href='#'>Profile</a>");
+            
+            firebase.database().ref("bio").child(currentUser.uid).on("child_added", function(childSnapshot){
+            $("#bio").text(childSnapshot.val().bio);
+            $("#personal-link").html(childSnapshot.val().personal).attr("href", "http://" + childSnapshot.val().personal);
+            })
+
             // Display user's listings in profile
             firebase.database().ref("listings").child(currentUser.uid).on("child_added", function(childSnapshot) {
                 $("#listings").append("<tr><td>" + childSnapshot.val().item +
@@ -104,6 +111,26 @@ $(document).ready(function() {
         $('#addListing').modal('hide');
     });
 });
+
+// Display form to edit profile
+    $("#edit-profile").on("click", function(){
+       $("#profile-new").modal("show");
+    });
+// Submit form to update profile
+    $(document).on("click", "#submit-profile", function(event){
+        event.preventDefault();
+
+        var bio = $("#user-bio").val().trim();
+        var personalSite = $("#personal").val().trim();
+
+        firebase.database().ref("bio").child(currentUser.uid).push({
+            bio: bio,
+            personal: personalSite
+        })
+        $("#profile-new").modal("hide");
+    });
+
+
 
 // Map Page
 // Credit: https://wrightshq.com/playground/placing-multiple-markers-on-a-google-map-using-api-3/
