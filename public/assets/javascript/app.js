@@ -138,7 +138,7 @@ function initMap() {
     firebase.database().ref("listings").on("child_added", function(snapshot){
         snapshot.forEach(function(childSnapshot) {
             codeAddress();
-            var item = childSnapshot.child("street").val();
+            var item = childSnapshot.child("street").val() + " " + childSnapshot.child("zipCode").val();
             item.key = childSnapshot.key;
             addresses.push(item); 
         });
