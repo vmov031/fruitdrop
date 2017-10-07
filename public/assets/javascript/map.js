@@ -12,8 +12,8 @@
     var provider = new firebase.auth.GoogleAuthProvider();
     var user;
     var currentUser;
+    var activeInfoWindow;
     // Map Page
-    // Credit: https://wrightshq.com/playground/placing-multiple-markers-on-a-google-map-using-api-3/
     var geocoder;
     var markers = [];
 
@@ -76,7 +76,9 @@
 
         function displayMarkers() {
             for(i = 0; i < dataMaker.length; i++) {
+                
                 geocoder.geocode({'address': dataMaker[i].street + dataMaker[i].zipCode}, makeCallback(i));
+
             }
 
             function makeCallback(dataMakerIndex) {
@@ -93,12 +95,47 @@
                         position: results[0].geometry.location
                     });
                     var infowindow = new google.maps.InfoWindow();
+                    // create an infowindow2 -  for mouseclick
+                    var infowindow2 = new google.maps.InfoWindow();
 
-                    infowindow.setContent('<h3 class="mapInfo">'+ dataMaker[i].item + '</h3>' + '<p>Pick up your ' + dataMaker[i].item + ' here!</p>' );
+                    infowindow.setContent('<h3 class="mapInfo">'+ dataMaker[i].item + '</h3>');
 
-                    //Open the infowindow
+                    // On Mouseover
+                    google.maps.event.addListener(marker, 'mouseover', function() {
+                
+                        // Close active window if exists - [one might expect this to be default behaviour no?]              
+                        if(activeInfoWindow != null) activeInfoWindow.close();
+
+                        // Close info Window on mouseclick if already opened
+                        infowindow.close();
+                    
+                        // Open new InfoWindow for mouseover event
+                        infowindow.open(map, marker);
+                        
+                        // Store new open InfoWindow in global variable
+                        activeInfoWindow = infowindow;             
+                    });  
+
+                    // On mouseout
+                    google.maps.event.addListener(marker, 'mouseout', function() {
+                        infowindow.close();    
+                    });    
+
+                    infowindow2.setContent('<h3 class="mapInfo">'+ dataMaker[i].item + '</h3>' + '<p>Pick up your ' + dataMaker[i].item + ' here!</p>' );   
+
+                    // Open the infowindow
                     google.maps.event.addListener(marker, 'click', function() {
-                        infowindow.open(map, this);
+                        //Close active window if exists - [one might expect this to be default behaviour no?]               
+                        if(activeInfoWindow != null) activeInfoWindow.close();
+
+                        // Open InfoWindow - on click 
+                        infowindow2.open(map, marker);
+                        
+                        // Close "mouseover" infoWindow
+                        infowindow.close();
+                        
+                        // Store new open InfoWindow in global variable
+                        activeInfoWindow = infowindow2;
                     });
                     }
                 }
