@@ -30,17 +30,16 @@ $(document).ready(function() {
 
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            var userUid = user.uid;
-            if (uid == userUid) {
+            if (uid === user.uid) {
                 currentUser = firebase.auth().currentUser;
-                $("#email").html(currentUser.email);
-                displayInfo();
+                displaySelfInfo();
             } else {
                 firebase.database().ref("users").child(uid).once("value").then(function(snapshot) {
                     currentUser = {
                         uid: uid,
                         photoURL: snapshot.val().photoURL,
                         displayName: snapshot.val().displayName,
+                        email: snapshot.val().email
                     };
                     displayInfo();
                 });
@@ -59,23 +58,51 @@ $(document).ready(function() {
     //     }
     // });
 
-    function displayInfo() {
+    function displaySelfInfo() {
         $("#profile-pic").attr("src", currentUser.photoURL);
         $("#profile-name").text(currentUser.displayName);
+        $("#email").html(currentUser.email);
         firebase.database().ref("users").child(currentUser.uid).on("child_added", function(childSnapshot) {
             $("#bio").text(childSnapshot.val().bio);
             $("#personal-link").html(childSnapshot.val().personal).attr("href", "http://" + childSnapshot.val().personal);
         });
         // Display user's listings in profile and to Firebase
         firebase.database().ref("listings").child(currentUser.uid).on("child_added", function(childSnapshot) {
-            //add to firebase
+            // add to firebase
             var newItem = childSnapshot.child('item').val();
             console.log("newitem: ", newItem);
             if (newItem) {
                 firebase.database().ref("items").child(newItem).push(childSnapshot.key);
 
             }
-            //add to profile
+            // create column to edit and delete listing
+            $("#table-headers").append("<tr><td>"
+            // add to profile
+            $("#listings").append("<tr><td>" + childSnapshot.val().item +
+                "</td><td>" + childSnapshot.val().quantity +
+                "</td><td>" + childSnapshot.val().street + " " + childSnapshot.val().zipCode +
+                "</td><td>" + childSnapshot.val().date + "</td></tr>");
+        });
+    }
+
+    function displayInfo() {
+        $("#profile-pic").attr("src", currentUser.photoURL);
+        $("#profile-name").text(currentUser.displayName);
+        $("#email").html("<a href='mailto:" + currentUser.email + "'>" + currentUser.email + "</a>");
+        firebase.database().ref("users").child(currentUser.uid).on("child_added", function(childSnapshot) {
+            $("#bio").text(childSnapshot.val().bio);
+            $("#personal-link").html(childSnapshot.val().personal).attr("href", "http://" + childSnapshot.val().personal);
+        });
+        // Display user's listings in profile and to Firebase
+        firebase.database().ref("listings").child(currentUser.uid).on("child_added", function(childSnapshot) {
+            // add to firebase
+            var newItem = childSnapshot.child('item').val();
+            console.log("newitem: ", newItem);
+            if (newItem) {
+                firebase.database().ref("items").child(newItem).push(childSnapshot.key);
+
+            }
+            // add to profile
             $("#listings").append("<tr><td>" + childSnapshot.val().item +
                 "</td><td>" + childSnapshot.val().quantity +
                 "</td><td>" + childSnapshot.val().street + " " + childSnapshot.val().zipCode +
