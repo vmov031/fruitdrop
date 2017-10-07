@@ -140,7 +140,7 @@ $(document).ready(function() {
 
 
     // Facebook Share button
-    $(document).on("click", "#fb-share" function () {
+    $(document).on("click", "#fb-share", function () {
         FB.ui({
         method: 'share',
         href: 'https://developers.facebook.com/docs/',
