@@ -71,7 +71,7 @@ $(document).ready(function() {
 
 
             //check children apply to current user
-            if (childSnapshot.child('uid').val() == currentUser.uid) {
+            if (childSnapshot.child('uid').val() === currentUser.uid) {
                 //add to profile
                 $("#listings").append("<tr><td>" + childSnapshot.val().item +
                     "</td><td>" + childSnapshot.val().quantity +
@@ -111,7 +111,7 @@ $(document).ready(function() {
         var zipCode = $("#zip-code").val();
         var date = $("#date").val();
         // Input to firebase under user's unique ID
-        firebase.database().ref("listings").push({
+        var newListing = firebase.database().ref("listings").push({
             item: item,
             quantity: quantity,
             street: street,
@@ -119,16 +119,9 @@ $(document).ready(function() {
             date: date,
             uid: currentUser.uid
         });
-        firebase.database().ref("listings").once("child_added", function(childSnapshot) {
-            //add to firebase
-            var newItem = childSnapshot.child('item').val();
-            if (newItem) {
-                firebase.database().ref("items").child(newItem).push(childSnapshot.key);
 
-            }
-
-        });
-
+        //add new listing to items list on firebase
+        firebase.database().ref("items").child(item).push(newListing.key);
 
         $('#addListing').modal('hide');
     });
