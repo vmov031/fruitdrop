@@ -36,7 +36,7 @@ $(document).ready(function() {
                 $("#email").html(currentUser.email);
 
             } else {
-                firebase.database().ref("bio").child(uid).once("value").then(function(snapshot) {
+                firebase.database().ref("users").child(uid).once("value").then(function(snapshot) {
                     currentUser = {
                         uid: uid,
                         photoURL: snapshot.val().photoURL,
@@ -49,7 +49,7 @@ $(document).ready(function() {
 
             $("#profile-pic").attr("src", currentUser.photoURL);
             $("#profile-name").text(currentUser.displayName);
-            firebase.database().ref("bio").child(currentUser.uid).on("child_added", function(childSnapshot) {
+            firebase.database().ref("users").child(currentUser.uid).on("child_added", function(childSnapshot) {
                 $("#bio").text(childSnapshot.val().bio);
                 $("#personal-link").html(childSnapshot.val().personal).attr("href", "http://" + childSnapshot.val().personal);
             });
@@ -131,7 +131,7 @@ $(document).ready(function() {
         var bio = $("#user-bio").val().trim();
         var personalSite = $("#personal").val().trim();
 
-        firebase.database().ref("bio").child(currentUser.uid).update({
+        firebase.database().ref("users").child(currentUser.uid).update({
             bio: bio,
             personal: personalSite
         })
