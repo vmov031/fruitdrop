@@ -97,7 +97,7 @@ $(document).ready(function() {
         }
     });
 
-=======
+
     function displayInfo() {
         $("#profile-pic").attr("src", currentUser.photoURL);
         $("#profile-name").text(currentUser.displayName);
