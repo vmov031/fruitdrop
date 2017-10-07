@@ -137,7 +137,7 @@ $(document).ready(function() {
         })
         $("#profile-new").modal("hide");
     });
-<<<<<<< HEAD
+
 
     // Facebook Share button
     $(document).on("click", "#fb-share" function () {
@@ -148,14 +148,7 @@ $(document).ready(function() {
 
         }
     });
-=======
-     // Facebook Share button
-    $(document).on("click", "#fb-share", function() {
-     FB.ui({
-         method: 'share',
-         href: 'https://developers.facebook.com/docs/',
-     }, function(response) {});
- });
+
    
->>>>>>> d632c7ff571a9a65e5d44d8f58be68ee4813a899
+
 });
