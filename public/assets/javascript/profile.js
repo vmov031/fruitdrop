@@ -146,7 +146,6 @@ $(document).ready(function() {
         href: 'https://developers.facebook.com/docs/',
         }, function(response){});
 
-        }
     });
 
    
