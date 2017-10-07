@@ -66,20 +66,20 @@ $(document).ready(function() {
             $("#bio").text(childSnapshot.val().bio);
             $("#personal-link").html(childSnapshot.val().personal).attr("href", "http://" + childSnapshot.val().personal);
         });
-        // Display user's listings in profile and to Firebase
-        firebase.database().ref("listings").child(currentUser.uid).on("child_added", function(childSnapshot) {
-            //add to firebase
-            var newItem = childSnapshot.child('item').val();
-            console.log("newitem: ", newItem);
-            if (newItem) {
-                firebase.database().ref("items").child(newItem).push(childSnapshot.key);
+        // Display user's listings in profile
+        firebase.database().ref("listings").on("child_added", function(childSnapshot) {
 
+
+            //check children apply to current user
+            if (childSnapshot.child('uid').val() == currentUser.uid) {
+                //add to profile
+                $("#listings").append("<tr><td>" + childSnapshot.val().item +
+                    "</td><td>" + childSnapshot.val().quantity +
+                    "</td><td>" + childSnapshot.val().street + " " + childSnapshot.val().zipCode +
+                    "</td><td>" + childSnapshot.val().date + "</td></tr>"
+                );
             }
-            //add to profile
-            $("#listings").append("<tr><td>" + childSnapshot.val().item +
-                "</td><td>" + childSnapshot.val().quantity +
-                "</td><td>" + childSnapshot.val().street + " " + childSnapshot.val().zipCode +
-                "</td><td>" + childSnapshot.val().date + "</td></tr>");
+
         });
     }
 
@@ -111,13 +111,25 @@ $(document).ready(function() {
         var zipCode = $("#zip-code").val();
         var date = $("#date").val();
         // Input to firebase under user's unique ID
-        firebase.database().ref("listings").child(currentUser.uid).push({
+        firebase.database().ref("listings").push({
             item: item,
             quantity: quantity,
             street: street,
             zipCode: zipCode,
-            date: date
-        })
+            date: date,
+            uid: currentUser.uid
+        });
+        firebase.database().ref("listings").once("child_added", function(childSnapshot) {
+            //add to firebase
+            var newItem = childSnapshot.child('item').val();
+            if (newItem) {
+                firebase.database().ref("items").child(newItem).push(childSnapshot.key);
+
+            }
+
+        });
+
+
         $('#addListing').modal('hide');
     });
 
