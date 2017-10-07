@@ -161,7 +161,7 @@ $(document).ready(function() {
     $(document).on("click", "#fb-share", function () {
         FB.ui({
         method: 'share',
-        href: 'https://developers.facebook.com/docs/',
+        href: 'https://vmov031.github.io/fruitdrop/public/profile.html',
         }, function(response){});
 
     });
