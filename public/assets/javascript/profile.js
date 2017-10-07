@@ -23,6 +23,19 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
+  $.ajaxSetup({ cache: true });
+  $.getScript('//connect.facebook.net/en_US/sdk.js', function(){
+    FB.init({
+      appId: '303697393443959',
+      version: 'v2.7' // or v2.1, v2.2, v2.3, ...
+    });     
+    $('#loginbutton,#feedbutton').removeAttr('disabled');
+    FB.getLoginStatus(updateStatusCallback);
+  });
+});
+
+
+$(document).ready(function() {
 
     function getUrlParameter(sParam) {
         var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -84,15 +97,30 @@ $(document).ready(function() {
         }
     });
 
-    // firebase.database().ref("listings").child(user.uid).on('child_added', function(childSnapshot, prevChildKey) {
-    //     var newItem = childSnapshot.child('item').val();
-    //     console.log("newitem: ", newItem);
-    //     if (newItem) {
-    //         firebase.database().ref("items").child(newItem).push(childSnapshot.key());
+=======
+    function displayInfo() {
+        $("#profile-pic").attr("src", currentUser.photoURL);
+        $("#profile-name").text(currentUser.displayName);
+        firebase.database().ref("users").child(currentUser.uid).on("child_added", function(childSnapshot) {
+            $("#bio").text(childSnapshot.val().bio);
+            $("#personal-link").html(childSnapshot.val().personal).attr("href", "http://" + childSnapshot.val().personal);
+        });
+        // Display user's listings in profile
+        firebase.database().ref("listings").on("child_added", function(childSnapshot) {
 
-    //     }
-    // });
 
+            //check children apply to current user
+            if (childSnapshot.child('uid').val() === currentUser.uid) {
+                //add to profile
+                $("#listings").append("<tr><td>" + childSnapshot.val().item +
+                    "</td><td>" + childSnapshot.val().quantity +
+                    "</td><td>" + childSnapshot.val().street + " " + childSnapshot.val().zipCode +
+                    "</td><td>" + childSnapshot.val().date + "</td></tr>"
+                );
+            }
+
+        });
+    }
 
 
     function logout() {
@@ -123,13 +151,18 @@ $(document).ready(function() {
         var zipCode = $("#zip-code").val();
         var date = $("#date").val();
         // Input to firebase under user's unique ID
-        firebase.database().ref("listings").child(currentUser.uid).push({
+        var newListing = firebase.database().ref("listings").push({
             item: item,
             quantity: quantity,
             street: street,
             zipCode: zipCode,
-            date: date
-        })
+            date: date,
+            uid: currentUser.uid
+        });
+
+        //add new listing to items list on firebase
+        firebase.database().ref("items").child(item).push(newListing.key);
+
         $('#addListing').modal('hide');
     });
 
@@ -151,15 +184,13 @@ $(document).ready(function() {
         $("#profile-new").modal("hide");
     });
 
-
-    // Facebook Share button
-    $(document).on("click", "#fb-share", function () {
-        FB.ui({
-        method: 'share',
-        href: 'https://vmov031.github.io/fruitdrop/public/profile.html',
-        }, function(response){});
-
-    });
+     // Facebook Share button
+    $(document).on("click", "#fb-share", function() {
+     FB.ui({
+         method: 'share',
+         href: 'https://vmov031.github.io/fruitdrop/public/profile.html?uid=' + currentUser.uid,
+     }, function(response) {});
+ });
 
    
 
