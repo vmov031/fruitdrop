@@ -125,7 +125,7 @@
 
                     // Open the infowindow
                     google.maps.event.addListener(marker, 'click', function() {
-                        //Close active window if exists - [one might expect this to be default behaviour no?]               
+                        //Close active window if exists               
                         if(activeInfoWindow != null) activeInfoWindow.close();
 
                         // Open InfoWindow - on click 
