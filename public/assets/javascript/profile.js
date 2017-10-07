@@ -66,22 +66,22 @@ $(document).ready(function() {
             $("#bio").text(childSnapshot.val().bio);
             $("#personal-link").html(childSnapshot.val().personal).attr("href", "http://" + childSnapshot.val().personal);
         });
-        // Display user's listings in profile and to Firebase
-        firebase.database().ref("listings").child(currentUser.uid).on("child_added", function(childSnapshot) {
-            // add to firebase
-            var newItem = childSnapshot.child('item').val();
-            console.log("newitem: ", newItem);
-            if (newItem) {
-                firebase.database().ref("items").child(newItem).push(childSnapshot.key);
-
+        // create column to edit and delete listing
+        $("#table-headers").append("<th>Edit</th><th>Delete</th>");
+        // Display user's listings in profile
+        firebase.database().ref("listings").on("child_added", function(childSnapshot) {
+            // check children apply to current user
+            if (childSnapshot.child('uid').val() === currentUser.uid) {
+                // add to profile
+                $("#listings").append("<tr><td>" + childSnapshot.val().item +
+                    "</td><td>" + childSnapshot.val().quantity +
+                    "</td><td>" + childSnapshot.val().street + " " + childSnapshot.val().zipCode +
+                    "</td><td>" + childSnapshot.val().date + 
+                    "</td><td><button class='edit-listing' data-uid='" + childSnapshot.val().uid + "'>Edit</button>" + 
+                    "</td><td><button class='delete-listing' data-uid='" + childSnapshot.val().uid + "'>Delete</button>" + 
+                    "</td></tr>"
+                );
             }
-            // create column to edit and delete listing
-            $("#table-headers").append("<tr><td>"
-            // add to profile
-            $("#listings").append("<tr><td>" + childSnapshot.val().item +
-                "</td><td>" + childSnapshot.val().quantity +
-                "</td><td>" + childSnapshot.val().street + " " + childSnapshot.val().zipCode +
-                "</td><td>" + childSnapshot.val().date + "</td></tr>");
         });
     }
 
@@ -95,10 +95,8 @@ $(document).ready(function() {
         });
         // Display user's listings in profile
         firebase.database().ref("listings").on("child_added", function(childSnapshot) {
-
-
-            //check children apply to current user
-            if (childSnapshot.child('uid').val() == currentUser.uid) {
+            // check children apply to current user
+            if (childSnapshot.child('uid').val() === currentUser.uid) {
                 //add to profile
                 $("#listings").append("<tr><td>" + childSnapshot.val().item +
                     "</td><td>" + childSnapshot.val().quantity +
