@@ -9,8 +9,6 @@ var config = {
 };
 firebase.initializeApp(config);
 
-$(document).ready(function() {
-
 // Facebook SDK
   window.fbAsyncInit = function() {
     FB.init({
@@ -29,6 +27,7 @@ $(document).ready(function() {
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
 
+$(document).ready(function() {
 
     function getUrlParameter(sParam) {
         var sPageURL = decodeURIComponent(window.location.search.substring(1)),
